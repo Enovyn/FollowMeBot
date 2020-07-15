@@ -2,6 +2,7 @@
 #include <fstream>
 #include <array>
 #include <string>
+#include <algorithm>
 
 using namespace std;
 
@@ -22,9 +23,16 @@ void parser(string file, token* input, int size){
             if(!storage.empty()){    //chechs if line is empty
                 size_t pos = storage.find("=");
                 string name = storage.substr(0, pos);
+                name.erase(remove(name.begin(),name.end(),' '),name.end());
                 for(int i = 0; i < size; i++){
                     if(name == input[i].name){  //search for variable in token array
-                        storage = storage.substr(pos+1);
+                        size_t comment = storage.find(";"); //cuts off any comments
+                        if (comment!=std::string::npos){
+                            storage = storage.substr(pos+1, comment);
+                        } else{
+                            storage = storage.substr(pos+1);
+                        }
+                        storage.erase(remove(storage.begin(),storage.end(),' '),storage.end());
                         input[i].refer = stoi(storage); //assign value
                     }
                 }

@@ -1,0 +1,10 @@
+
+var1=4
+
+
+var3   =   1       2  ;will be interpreted as 12
+var7=6
+
+var8 =4
+
+  var2 = 1   ;comment

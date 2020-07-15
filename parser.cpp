@@ -1,12 +1,11 @@
 #include <iostream>
-#include <string>
 
 using namespace std;
 
 typedef struct token {
-  string name;
+  char name[10];
   int& refer;
-  token(string namenew, int&refernew) : name(namenew), refer(refernew) {}
+  token(char namenew[10], int&refernew) : refer(refernew) {copy(namenew, namenew+10, name);}
 };
 
 int main () {
@@ -26,14 +25,13 @@ int main () {
    token t2("var2", ref2);
    token t3("var3", ref3);
 
-   //test print
    var1 = 12;
    var2 = 42;
    var3 = 1;
 
-   cout << t1.refer << endl;
-   cout << t2.refer << endl;
-   cout << t3.refer << endl;
+   cout << t1.name << " " << t1.refer << endl;
+   cout << t2.name << " " << t2.refer << endl;
+   cout << t3.name << " " << t3.refer << endl;
 
    return 0;
 }

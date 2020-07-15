@@ -1,31 +1,38 @@
 #include <iostream>
 #include <fstream>
 #include <array>
+#include <string>
 
 using namespace std;
 
 typedef struct token{
-    char name[10];
+    string name;
     int& refer;
-    token(char namenew[10], int&refernew) : refer(refernew)
-    {
-        copy(namenew, namenew+10, name);
-    }
+    token(string namenew, int& refernew) : name(namenew), refer(refernew){} //constructor
 };
-//char* file, token* input
-void parser(char* file){
+
+void parser(string file, token* input, int size){
     ifstream fin;
     fin.open(file, ios::in); //open file
 
-    if (fin.is_open()){ //checks if file was opened
-        char storage[20];
+    if (fin.is_open()){  //checks if file was opened
+        string storage;
 
-        while(fin.getline(storage, 20)){ //read data from file object and put it into buffer
-         cout << storage << "\n"; //print the data
+        while(getline(fin, storage)){  //read data from file object and put it into buffer
+            if(!storage.empty()){    //chechs if line is empty
+                size_t pos = storage.find("=");
+                string name = storage.substr(0, pos);
+                for(int i = 0; i < size; i++){
+                    if(name == input[i].name){  //search for variable in token array
+                        storage = storage.substr(pos+1);
+                        input[i].refer = stoi(storage); //assign value
+                    }
+                }
+            }
         }
         fin.close();
     }
-    else{   //if file couldn't be opened print error message
+    else{    //if file couldn't be opened print error message
         cerr << "error: open file for parser failed!" << endl;
         abort();
     }
@@ -42,7 +49,6 @@ int main (){
     int& ref2 = var2;
     int& ref3 = var3;
 
-
     //create token
     token t1("var1", ref1);
     token t2("var2", ref2);
@@ -50,18 +56,13 @@ int main (){
 
     array<token, 3> input = {t1, t2, t3};
 
-    var1 = 8;
-    var2 = 16;
-    var3 = 70;
+    string file = "config.txt";
+
+    parser(file, &input[0], input.size());
 
     cout << input[0].name << " " << input[0].refer << endl;
     cout << t2.name << " " << t2.refer << endl;
     cout << t3.name << " " << t3.refer << endl;
-
-    char file[] = "C:\\Users\\yvonn\\Desktop\\OTH\\6.Semester\\DatenverarbeitungTechnik\\Parser\\config.txt";
-
-    parser(file);
-
 
     return 0;
 }
